@@ -217,6 +217,51 @@ Current local result:
 Final Best Tree vs Flat verdict: PASS
 ```
 
+The larger scaled benchmark is:
+
+```text
+benchmarks/scaled_memory_benchmark.py
+```
+
+It compares four retrieval strategies:
+
+- `flat_append`: flat memory where updates are appended and stale facts remain retrievable
+- `flat_replace`: stronger flat memory with exact path+slot replacement
+- `hard_tree`: strict top-1 branch routing
+- `hybrid_tree`: beam tree routing with compact fallback
+
+Current scaled result:
+
+```text
+Final Scaled Memory Benchmark verdict: PASS
+```
+
+Latest scaled summary:
+
+```text
+Concepts: 37
+Base facts: 111
+Updates: 17
+Queries: 256
+
+Overall top-1 accuracy:
+flat_replace 0.934
+hard_tree    1.000
+hybrid_tree  0.957
+
+Context contamination:
+flat_replace 0.767
+hard_tree    0.000
+hybrid_tree  0.038
+
+AI context risk:
+flat_replace 0.089
+hard_tree    0.000
+hybrid_tree  0.028
+```
+
+This result supports the main claim: hierarchical memory can keep retrieval context much cleaner than flat memory while preserving strong answer retrieval.
+
 Summary from the latest run:
 
 ```text
@@ -300,6 +345,8 @@ examples/interactive_cli.py        Tiny manual testing CLI
 benchmarks/flat_vs_tree_5tasks.py  FlatMemory vs HybridTree benchmark
 benchmarks/_flat_vs_tree_5tasks_impl.py
                                     Benchmark implementation
+benchmarks/scaled_memory_benchmark.py
+                                    Larger flat vs hard-tree vs hybrid-tree benchmark
 docs/hypothesis.md                 Research hypothesis and predictions
 docs/architecture.md               System architecture
 docs/results.md                    Benchmark summary and interpretation
