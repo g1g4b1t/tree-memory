@@ -113,6 +113,22 @@ This benchmark uses a language model to test whether cleaner TreeMemory context 
 docs/llm_benchmark.md
 ```
 
+Latest real-LLM Colab result with `google/flan-t5-small`:
+
+```text
+flat_replace       accuracy 0.70, context contamination 0.875
+hybrid_tree        accuracy 0.70, context contamination 0.492
+hard_tree          accuracy 0.95, context contamination 0.000
+gated_hybrid_tree  accuracy 0.95, context contamination 0.000
+no_context         accuracy 0.00
+```
+
+See:
+
+```text
+docs/llm_results.md
+```
+
 Run the interactive CLI:
 
 ```bash
@@ -389,6 +405,7 @@ docs/results.md                    Benchmark summary and interpretation
 docs/github_setup.md               Publishing notes for GitHub
 docs/colab.md                      Google Colab quickstart
 docs/llm_benchmark.md              Optional real-LLM benchmark notes
+docs/llm_results.md                First real-LLM benchmark result
 experiments/                       Archived exploratory experiments
 artifacts/                         Local demo and benchmark outputs
 scripts/validate.py                Full local validation suite
