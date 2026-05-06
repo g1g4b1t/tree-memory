@@ -129,6 +129,18 @@ See:
 docs/llm_results.md
 ```
 
+Run the optional TreeMemory vs LoRA benchmark in Colab:
+
+```text
+https://colab.research.google.com/github/g1g4b1t/tree-memory/blob/main/notebooks/tree_memory_lora_benchmark_colab.ipynb
+```
+
+This compares external memory updates against LoRA adapter training for factual memory. See:
+
+```text
+docs/lora_benchmark.md
+```
+
 Run the interactive CLI:
 
 ```bash
@@ -399,6 +411,8 @@ benchmarks/scaled_memory_benchmark.py
                                     Larger flat vs hard-tree vs hybrid-tree benchmark
 benchmarks/llm_context_benchmark.py
                                     Optional real-LLM context benchmark
+benchmarks/lora_vs_tree_benchmark.py
+                                    Optional TreeMemory vs LoRA benchmark
 docs/hypothesis.md                 Research hypothesis and predictions
 docs/architecture.md               System architecture
 docs/results.md                    Benchmark summary and interpretation
@@ -406,6 +420,7 @@ docs/github_setup.md               Publishing notes for GitHub
 docs/colab.md                      Google Colab quickstart
 docs/llm_benchmark.md              Optional real-LLM benchmark notes
 docs/llm_results.md                First real-LLM benchmark result
+docs/lora_benchmark.md             Optional TreeMemory vs LoRA notes
 experiments/                       Archived exploratory experiments
 artifacts/                         Local demo and benchmark outputs
 scripts/validate.py                Full local validation suite
@@ -413,12 +428,15 @@ notebooks/tree_memory_colab_demo.ipynb
                                     Zero-install Colab demo
 notebooks/tree_memory_llm_benchmark_colab.ipynb
                                     Colab notebook for real-LLM benchmark
+notebooks/tree_memory_lora_benchmark_colab.ipynb
+                                    Colab notebook for TreeMemory vs LoRA
 tests/test_tree_memory_engine.py   Basic regression tests
 .github/workflows/ci.yml           GitHub Actions validation
 LICENSE                            MIT License
 README.md                          Project overview
 requirements.txt                   Minimal benchmark dependency
 requirements-llm.txt               Optional LLM benchmark dependencies
+requirements-lora.txt              Optional LoRA benchmark dependencies
 ```
 
 Run tests:
