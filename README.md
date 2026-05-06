@@ -101,6 +101,18 @@ Colab is optional. TreeMemory runs on CPU, but the notebook is useful for a zero
 docs/colab.md
 ```
 
+Run the optional real-LLM benchmark in Colab:
+
+```text
+https://colab.research.google.com/github/g1g4b1t/tree-memory/blob/main/notebooks/tree_memory_llm_benchmark_colab.ipynb
+```
+
+This benchmark uses a language model to test whether cleaner TreeMemory context improves generated answers. Use a T4 GPU if available. See:
+
+```text
+docs/llm_benchmark.md
+```
+
 Run the interactive CLI:
 
 ```bash
@@ -365,21 +377,27 @@ benchmarks/_flat_vs_tree_5tasks_impl.py
                                     Benchmark implementation
 benchmarks/scaled_memory_benchmark.py
                                     Larger flat vs hard-tree vs hybrid-tree benchmark
+benchmarks/llm_context_benchmark.py
+                                    Optional real-LLM context benchmark
 docs/hypothesis.md                 Research hypothesis and predictions
 docs/architecture.md               System architecture
 docs/results.md                    Benchmark summary and interpretation
 docs/github_setup.md               Publishing notes for GitHub
 docs/colab.md                      Google Colab quickstart
+docs/llm_benchmark.md              Optional real-LLM benchmark notes
 experiments/                       Archived exploratory experiments
 artifacts/                         Local demo and benchmark outputs
 scripts/validate.py                Full local validation suite
 notebooks/tree_memory_colab_demo.ipynb
                                     Zero-install Colab demo
+notebooks/tree_memory_llm_benchmark_colab.ipynb
+                                    Colab notebook for real-LLM benchmark
 tests/test_tree_memory_engine.py   Basic regression tests
 .github/workflows/ci.yml           GitHub Actions validation
 LICENSE                            MIT License
 README.md                          Project overview
 requirements.txt                   Minimal benchmark dependency
+requirements-llm.txt               Optional LLM benchmark dependencies
 ```
 
 Run tests:
