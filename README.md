@@ -83,6 +83,24 @@ Run the demo:
 python examples/demo.py
 ```
 
+Run in Google Colab:
+
+```text
+notebooks/tree_memory_colab_demo.ipynb
+```
+
+Direct Colab link:
+
+```text
+https://colab.research.google.com/github/g1g4b1t/tree-memory/blob/main/notebooks/tree_memory_colab_demo.ipynb
+```
+
+Colab is optional. TreeMemory runs on CPU, but the notebook is useful for a zero-install demo. See:
+
+```text
+docs/colab.md
+```
+
 Run the interactive CLI:
 
 ```bash
@@ -351,9 +369,12 @@ docs/hypothesis.md                 Research hypothesis and predictions
 docs/architecture.md               System architecture
 docs/results.md                    Benchmark summary and interpretation
 docs/github_setup.md               Publishing notes for GitHub
+docs/colab.md                      Google Colab quickstart
 experiments/                       Archived exploratory experiments
 artifacts/                         Local demo and benchmark outputs
 scripts/validate.py                Full local validation suite
+notebooks/tree_memory_colab_demo.ipynb
+                                    Zero-install Colab demo
 tests/test_tree_memory_engine.py   Basic regression tests
 .github/workflows/ci.yml           GitHub Actions validation
 LICENSE                            MIT License
