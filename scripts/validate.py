@@ -59,6 +59,11 @@ def main():
         ["benchmarks/flat_vs_tree_5tasks.py"],
         must_contain=["Final Best Tree vs Flat verdict: PASS"],
     )
+    run_step(
+        "scaled benchmark",
+        ["benchmarks/scaled_memory_benchmark.py"],
+        must_contain=["Final Scaled Memory Benchmark verdict: PASS"],
+    )
     print("\nAll checks passed.")
 
 
