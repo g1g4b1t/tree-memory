@@ -13,6 +13,12 @@ Benchmark file:
 benchmarks/flat_vs_tree_5tasks.py
 ```
 
+Larger benchmark file:
+
+```text
+benchmarks/scaled_memory_benchmark.py
+```
+
 Run:
 
 ```bash
@@ -98,6 +104,43 @@ What are Michelin stars, not tires? -> restaurant awards
 
 TreeMemory passes this example.
 
+## Scaled Benchmark
+
+The scaled benchmark tests a larger synthetic memory:
+
+```text
+Concepts: 37
+Base facts: 111
+Updates: 17
+Queries: 256
+```
+
+It compares:
+
+- `flat_append`: flat memory that appends updates
+- `flat_replace`: stronger flat memory with local replacement
+- `hard_tree`: strict top-1 tree routing
+- `hybrid_tree`: beam tree routing with compact fallback
+
+Latest result:
+
+```text
+Final Scaled Memory Benchmark verdict: PASS
+```
+
+Overall summary:
+
+| Memory | Top-1 | Hit@K | Path Precision | Wrong Branch Hits | Context Contamination | AI Context Risk |
+|---|---:|---:|---:|---:|---:|---:|
+| flat_append | 0.934 | 1.000 | 0.241 | 4.230 | 0.767 | 0.106 |
+| flat_replace | 0.934 | 1.000 | 0.233 | 4.281 | 0.767 | 0.089 |
+| hard_tree | 1.000 | 1.000 | 1.000 | 0.000 | 0.000 | 0.000 |
+| hybrid_tree | 0.957 | 1.000 | 0.962 | 0.078 | 0.038 | 0.028 |
+
+Interpretation:
+
+On this generated dataset, explicit domain hints make strict tree routing very strong. Hybrid tree routing is slightly less clean than hard routing, but still much cleaner than flat retrieval. This supports the practical claim that hierarchical memory can reduce context contamination and wrong-branch retrieval.
+
 ## What This Result Supports
 
 The current result supports a cautious claim:
@@ -139,4 +182,3 @@ The next benchmark should test:
    - beam tree
    - beam tree + fallback
    - beam tree + fallback + local update
-
