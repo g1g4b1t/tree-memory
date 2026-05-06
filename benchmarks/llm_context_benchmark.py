@@ -7,8 +7,6 @@ from dataclasses import asdict
 from pathlib import Path
 
 import pandas as pd
-import torch
-from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
 
 
 HERE = Path(__file__).resolve().parent
@@ -126,6 +124,10 @@ def summarize(rows):
 
 
 def run(args):
+    global torch
+    import torch
+    from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
+
     started = time.time()
     aliases, facts, updates, pre_queries, post_queries = build_dataset()
     memories = build_memories(aliases, facts)
@@ -145,7 +147,7 @@ def run(args):
     model = AutoModelForSeq2SeqLM.from_pretrained(args.model).to(device)
     model.eval()
 
-    memory_order = ["no_context", "flat_replace", "hard_tree", "hybrid_tree"]
+    memory_order = ["no_context", "flat_replace", "hard_tree", "hybrid_tree", "gated_hybrid_tree"]
     rows = []
     total = len(selected_queries) * len(memory_order)
     done = 0
@@ -181,10 +183,14 @@ def run(args):
     rows_by_memory = {row.memory: row for row in overall.itertuples(index=False)}
     flat = rows_by_memory["flat_replace"]
     hybrid = rows_by_memory["hybrid_tree"]
+    gated = rows_by_memory["gated_hybrid_tree"]
     checks = {
         "hybrid_llm_accuracy_ge_flat_minus_5pct": hybrid.llm_correct >= flat.llm_correct - 0.05,
         "hybrid_context_contamination_lt_flat": hybrid.context_contamination < flat.context_contamination,
         "hybrid_ai_context_risk_lt_flat": hybrid.ai_context_risk < flat.ai_context_risk,
+        "gated_llm_accuracy_ge_flat_minus_5pct": gated.llm_correct >= flat.llm_correct - 0.05,
+        "gated_context_contamination_le_hybrid": gated.context_contamination <= hybrid.context_contamination,
+        "gated_ai_context_risk_le_hybrid": gated.ai_context_risk <= hybrid.ai_context_risk,
     }
     checks["final_pass"] = all(checks.values())
 

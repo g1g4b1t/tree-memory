@@ -12,6 +12,8 @@ BEAM_WIDTH = 4
 FALLBACK_K = 3
 TREE_MAX_RETURN = 4
 TREE_SCORE_WINDOW = 1.75
+GATE_MIN_SCORE = 5.0
+GATE_MARGIN = 2.0
 
 
 STOPWORDS = {
@@ -214,7 +216,7 @@ class TreeMemoryBase:
             words.update(self.node_words.get(prefix, set()))
         return words
 
-    def route(self, query):
+    def scored_routes(self, query):
         q = toks(query)
         q_lower = query.lower()
         neg = negative_terms(query)
@@ -232,7 +234,10 @@ class TreeMemoryBase:
             score += 0.05 * path.count("/")
             routes.append((score, path))
         routes.sort(reverse=True)
-        return [path for score, path in routes[:self.beam_width] if score > -2]
+        return [(score, path) for score, path in routes[:self.beam_width] if score > -2]
+
+    def route(self, query):
+        return [path for _, path in self.scored_routes(query)]
 
     def fallback(self, query):
         scored = []
@@ -278,6 +283,37 @@ class HardTreeMemory(TreeMemoryBase):
 class HybridTreeMemory(TreeMemoryBase):
     def __init__(self):
         super().__init__("hybrid_tree", beam_width=BEAM_WIDTH, fallback_k=FALLBACK_K)
+
+
+class GatedHybridTreeMemory(TreeMemoryBase):
+    def __init__(self):
+        super().__init__("gated_hybrid_tree", beam_width=BEAM_WIDTH, fallback_k=FALLBACK_K)
+
+    def route_is_confident(self, scored_routes):
+        if not scored_routes:
+            return False
+        top_score = scored_routes[0][0]
+        second_score = scored_routes[1][0] if len(scored_routes) > 1 else float("-inf")
+        return top_score >= GATE_MIN_SCORE and top_score - second_score >= GATE_MARGIN
+
+    def retrieve_from_single_route(self, query, path, top_k):
+        candidates = [fact for fact in self.active_facts() if fact.path == path]
+        scored = []
+        for fact in candidates:
+            score = score_text(query, fact, include_path=True) + 2.0 + 0.1 * fact.version
+            scored.append((score, fact.version, fact.id, fact))
+        scored.sort(reverse=True)
+        if not scored:
+            return []
+        best = scored[0][0]
+        limit = min(top_k, TREE_MAX_RETURN)
+        return [fact for score, _, __, fact in scored[:limit] if score > 0 and score >= best - TREE_SCORE_WINDOW]
+
+    def retrieve(self, query, top_k=TOP_K):
+        scored_routes = self.scored_routes(query)
+        if self.route_is_confident(scored_routes):
+            return self.retrieve_from_single_route(query, scored_routes[0][1], top_k)
+        return super().retrieve(query, top_k=top_k)
 
 
 def make_alias(surface, domain, values):
@@ -383,7 +419,13 @@ def build_dataset():
 
 
 def build_memories(aliases, facts):
-    memories = [FlatAppendMemory(), FlatReplaceMemory(), HardTreeMemory(), HybridTreeMemory()]
+    memories = [
+        FlatAppendMemory(),
+        FlatReplaceMemory(),
+        HardTreeMemory(),
+        HybridTreeMemory(),
+        GatedHybridTreeMemory(),
+    ]
     for memory in memories:
         for path, alias in aliases.items():
             memory.add_alias(path, alias)
@@ -465,6 +507,7 @@ def checks(overall):
     append = rows["flat_append"]
     hard = rows["hard_tree"]
     hybrid = rows["hybrid_tree"]
+    gated = rows["gated_hybrid_tree"]
     out = {
         "hybrid_top1_close_to_strong_flat": hybrid.top1_correct >= flat.top1_correct - 0.05,
         "hybrid_path_precision_beats_flat": hybrid.path_precision >= flat.path_precision + 0.25,
@@ -472,6 +515,10 @@ def checks(overall):
         "hybrid_ai_context_risk_below_flat": hybrid.ai_context_risk <= flat.ai_context_risk * 0.6,
         "hybrid_stale_conflicts_below_append": hybrid.stale_conflicts <= append.stale_conflicts,
         "hybrid_beats_hard_on_hit_at_k": hybrid.hit_at_k >= hard.hit_at_k,
+        "gated_top1_close_to_hard": gated.top1_correct >= hard.top1_correct - 0.05,
+        "gated_context_contamination_below_hybrid": gated.context_contamination <= hybrid.context_contamination,
+        "gated_ai_context_risk_below_hybrid": gated.ai_context_risk <= hybrid.ai_context_risk,
+        "gated_hit_at_k_ge_hybrid": gated.hit_at_k >= hybrid.hit_at_k,
     }
     out["final_pass"] = all(out.values())
     return out
@@ -566,6 +613,8 @@ def main():
             "FALLBACK_K": FALLBACK_K,
             "TREE_MAX_RETURN": TREE_MAX_RETURN,
             "TREE_SCORE_WINDOW": TREE_SCORE_WINDOW,
+            "GATE_MIN_SCORE": GATE_MIN_SCORE,
+            "GATE_MARGIN": GATE_MARGIN,
         },
         "dataset": dataset_stats,
         "rows": df.to_dict(orient="records"),
