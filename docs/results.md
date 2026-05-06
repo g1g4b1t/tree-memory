@@ -199,6 +199,29 @@ For details, see:
 docs/lora_results.md
 ```
 
+## Robust Natural Queries
+
+The robust benchmark uses less explicit, more natural questions.
+
+Summary:
+
+| Memory | Top-1 Accuracy | Context Contamination | AI Context Risk |
+|---|---:|---:|---:|
+| flat_replace | 0.746 | 0.818 | 0.133 |
+| hard_tree | 0.746 | 0.153 | 0.136 |
+| hybrid_tree | 0.797 | 0.145 | 0.103 |
+| gated_hybrid_tree | 0.797 | 0.131 | 0.093 |
+
+Interpretation:
+
+Slot-aware reranking improves top-1 accuracy on this harder natural-query benchmark while preserving TreeMemory's lower context contamination. The remaining failure mode is still attribute selection inside the correct branch.
+
+For details, see:
+
+```text
+docs/robust_results.md
+```
+
 ## What This Result Supports
 
 The current result supports a cautious claim:
