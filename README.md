@@ -259,6 +259,7 @@ It compares four retrieval strategies:
 - `flat_replace`: stronger flat memory with exact path+slot replacement
 - `hard_tree`: strict top-1 branch routing
 - `hybrid_tree`: beam tree routing with compact fallback
+- `gated_hybrid_tree`: hard routing when confidence is high, fallback only when confidence is low
 
 Current scaled result:
 
@@ -278,16 +279,19 @@ Overall top-1 accuracy:
 flat_replace 0.934
 hard_tree    1.000
 hybrid_tree  0.957
+gated_hybrid_tree 1.000
 
 Context contamination:
 flat_replace 0.767
 hard_tree    0.000
 hybrid_tree  0.038
+gated_hybrid_tree 0.000
 
 AI context risk:
 flat_replace 0.089
 hard_tree    0.000
 hybrid_tree  0.028
+gated_hybrid_tree 0.000
 ```
 
 This result supports the main claim: hierarchical memory can keep retrieval context much cleaner than flat memory while preserving strong answer retrieval.
