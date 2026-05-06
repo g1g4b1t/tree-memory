@@ -121,6 +121,7 @@ It compares:
 - `flat_replace`: stronger flat memory with local replacement
 - `hard_tree`: strict top-1 tree routing
 - `hybrid_tree`: beam tree routing with compact fallback
+- `gated_hybrid_tree`: strict routing when confidence is high, fallback only when confidence is low
 
 Latest result:
 
@@ -134,12 +135,13 @@ Overall summary:
 |---|---:|---:|---:|---:|---:|---:|
 | flat_append | 0.934 | 1.000 | 0.241 | 4.230 | 0.767 | 0.106 |
 | flat_replace | 0.934 | 1.000 | 0.233 | 4.281 | 0.767 | 0.089 |
+| gated_hybrid_tree | 1.000 | 1.000 | 1.000 | 0.000 | 0.000 | 0.000 |
 | hard_tree | 1.000 | 1.000 | 1.000 | 0.000 | 0.000 | 0.000 |
 | hybrid_tree | 0.957 | 1.000 | 0.962 | 0.078 | 0.038 | 0.028 |
 
 Interpretation:
 
-On this generated dataset, explicit domain hints make strict tree routing very strong. Hybrid tree routing is slightly less clean than hard routing, but still much cleaner than flat retrieval. This supports the practical claim that hierarchical memory can reduce context contamination and wrong-branch retrieval.
+On this generated dataset, explicit domain hints make strict tree routing very strong. Plain hybrid tree routing is less clean because fallback can reintroduce unrelated context. Gated hybrid routing fixes that by using fallback only when routing confidence is low. This supports the practical claim that hierarchical memory can reduce context contamination and wrong-branch retrieval.
 
 ## What This Result Supports
 

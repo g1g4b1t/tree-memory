@@ -64,6 +64,9 @@ The benchmark compares:
 - `flat_replace`
 - `hard_tree`
 - `hybrid_tree`
+- `gated_hybrid_tree`
+
+`gated_hybrid_tree` uses the clean single-branch route when the router is confident and only falls back to beam/fallback retrieval when confidence is low.
 
 It measures:
 
