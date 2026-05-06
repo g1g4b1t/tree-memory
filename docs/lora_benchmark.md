@@ -76,3 +76,17 @@ The benchmark tests this claim:
 > For frequently updated factual memory, external TreeMemory should provide stronger update locality and lower operational cost than LoRA fine-tuning while preserving competitive answer accuracy.
 
 LoRA may still be better for learning style, skills, and broad domain behavior. TreeMemory is intended for inspectable, editable factual memory.
+
+Latest recorded result:
+
+```text
+gated_tree_context    accuracy 0.906
+lora_only             accuracy 0.094
+lora_plus_gated_tree  accuracy 0.938
+```
+
+See:
+
+```text
+docs/lora_results.md
+```

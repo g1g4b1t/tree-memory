@@ -171,6 +171,34 @@ For details, see:
 docs/llm_results.md
 ```
 
+## LoRA Comparison
+
+The first Colab LoRA comparison used:
+
+```text
+google/flan-t5-small
+```
+
+Summary:
+
+| Strategy | LLM Accuracy | Context Contamination | Trainable LoRA Params |
+|---|---:|---:|---:|
+| no_context | 0.031 | 0.000 | 0 |
+| flat_context | 0.625 | 0.855 | 0 |
+| gated_tree_context | 0.906 | 0.094 | 0 |
+| lora_only | 0.094 | 0.000 | 344,064 |
+| lora_plus_gated_tree | 0.938 | 0.094 | 344,064 |
+
+Interpretation:
+
+LoRA alone did not function well as factual memory in this small run. External TreeMemory was much stronger for answer accuracy, and combining LoRA with TreeMemory performed best.
+
+For details, see:
+
+```text
+docs/lora_results.md
+```
+
 ## What This Result Supports
 
 The current result supports a cautious claim:
