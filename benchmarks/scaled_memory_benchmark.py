@@ -71,6 +71,28 @@ SLOT_LABELS = {
 }
 
 
+SLOT_HINTS = {
+    "role": {
+        "role", "main", "kind", "type", "what", "which", "provide", "provides",
+        "make", "makes", "made", "used", "applications", "animal", "material",
+        "drink", "vehicles", "lift", "lifts", "closest", "planet", "company",
+        "products", "scripts", "purpose",
+    },
+    "marker": {
+        "marker", "distinctive", "feature", "formatting", "compiled", "symbol",
+        "color", "colour", "shed", "sheds", "coat", "pattern", "strings",
+        "legs", "chip", "city", "major", "craters", "beans", "money", "erosion",
+        "boom", "part", "body", "chemical", "habitat", "live", "lives", "where",
+        "lake", "made", "from",
+    },
+    "association": {
+        "association", "value", "orbit", "tool", "installer", "package",
+        "packages", "based", "located", "country", "forests", "water",
+        "notes", "runtime",
+    },
+}
+
+
 @dataclass
 class Fact:
     id: int
@@ -130,6 +152,24 @@ def score_text(query, fact, include_path=False):
     return len(overlap) + 0.35 * len(overlap) / len(q) - 2.5 * len(neg)
 
 
+def slot_score(query, fact):
+    q = toks(query)
+    hints = SLOT_HINTS.get(fact.slot, set())
+    if not q or not hints:
+        return 0.0
+    score = 1.35 * len(q & hints)
+    text = query.lower()
+    if fact.slot == "role" and re.search(r"\bwhat (kind|type)\b|\bwhat does\b|\bwhat are\b|\bwhat is\b", text):
+        score += 1.0
+    if fact.slot == "marker" and re.search(r"\b(symbol|color|colour|shed|compiled|feature|pattern|strings|legs|chip)\b", text):
+        score += 2.0
+    if fact.slot == "marker" and re.search(r"\b(city|habitat|where|live|lives|made from|beans|erosion|craters)\b", text):
+        score += 2.0
+    if fact.slot == "association" and re.search(r"\b(where|habitat|live|lives|orbit|package|installer|from|made from)\b", text):
+        score += 2.0
+    return score
+
+
 def prefixes(path):
     parts = path.split("/")
     return ["/".join(parts[:i]) for i in range(1, len(parts) + 1)]
@@ -159,7 +199,7 @@ class FlatAppendMemory:
             if not fact.active:
                 continue
             recency = 0.03 * (pos + 1) / total
-            scored.append((score_text(query, fact, include_path=False) + recency, fact.id, fact))
+            scored.append((score_text(query, fact, include_path=False) + slot_score(query, fact) + recency, fact.id, fact))
         scored.sort(reverse=True)
         return [fact for score, _, fact in scored[:top_k] if score > 0]
 
@@ -262,7 +302,7 @@ class TreeMemoryBase:
         for fact in candidates.values():
             route_bonus = 2.0 / (1 + route_rank[fact.path]) if fact.path in route_rank else 0.15
             version_bonus = 0.1 * fact.version
-            score = score_text(query, fact, include_path=True) + route_bonus + version_bonus
+            score = score_text(query, fact, include_path=True) + slot_score(query, fact) + route_bonus + version_bonus
             scored.append((score, fact.version, fact.id, fact))
         scored.sort(reverse=True)
         if not scored:
@@ -300,7 +340,7 @@ class GatedHybridTreeMemory(TreeMemoryBase):
         candidates = [fact for fact in self.active_facts() if fact.path == path]
         scored = []
         for fact in candidates:
-            score = score_text(query, fact, include_path=True) + 2.0 + 0.1 * fact.version
+            score = score_text(query, fact, include_path=True) + slot_score(query, fact) + 2.0 + 0.1 * fact.version
             scored.append((score, fact.version, fact.id, fact))
         scored.sort(reverse=True)
         if not scored:
