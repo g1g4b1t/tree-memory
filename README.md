@@ -6,6 +6,49 @@ TreeMemory is an experimental external memory system for AI assistants. The core
 
 This project explores whether a hierarchical memory can reduce context contamination, wrong-branch retrieval, and stale fact conflicts compared with flat lexical memory.
 
+## Key Results
+
+The strongest current result is the TreeMemory vs LoRA comparison.
+
+In a Colab benchmark with `google/flan-t5-small`, factual answers were tested using five strategies:
+
+| Strategy | Accuracy | Notes |
+|---|---:|---|
+| `no_context` | 0.031 | model answers without memory |
+| `flat_context` | 0.625 | flat retrieval context |
+| `gated_tree_context` | 0.906 | confidence-gated TreeMemory context |
+| `lora_only` | 0.094 | LoRA adapter, no retrieval context |
+| `lora_plus_gated_tree` | 0.938 | LoRA plus TreeMemory context |
+
+LoRA trained quickly in this small run:
+
+```text
+trainable LoRA parameters: 344,064
+base train time: 4.936 sec
+update train time: 1.981 sec
+```
+
+But as a factual memory mechanism, LoRA alone performed poorly compared with external TreeMemory:
+
+```text
+lora_only            accuracy 0.094
+gated_tree_context   accuracy 0.906
+lora_plus_tree       accuracy 0.938
+```
+
+Current interpretation:
+
+> LoRA may complement TreeMemory, but in this benchmark it does not replace external factual memory.
+
+The result is early and synthetic, but it points to a useful distinction: LoRA is good for adapting model behavior, while frequently updated factual memory may be better stored in an external, inspectable memory layer.
+
+See:
+
+```text
+docs/lora_results.md
+docs/lora_benchmark.md
+```
+
 ## Motivation
 
 Long-term AI memory has a practical problem: similar words can refer to unrelated concepts.
