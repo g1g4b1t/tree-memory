@@ -143,6 +143,34 @@ Interpretation:
 
 On this generated dataset, explicit domain hints make strict tree routing very strong. Plain hybrid tree routing is less clean because fallback can reintroduce unrelated context. Gated hybrid routing fixes that by using fallback only when routing confidence is low. This supports the practical claim that hierarchical memory can reduce context contamination and wrong-branch retrieval.
 
+## Real LLM Benchmark
+
+The first Colab run used:
+
+```text
+google/flan-t5-small
+```
+
+Summary:
+
+| Memory | LLM Accuracy | Context Contamination | AI Context Risk |
+|---|---:|---:|---:|
+| no_context | 0.00 | 0.000 | 0.000 |
+| flat_replace | 0.70 | 0.875 | 0.106 |
+| hybrid_tree | 0.70 | 0.492 | 0.358 |
+| hard_tree | 0.95 | 0.000 | 0.000 |
+| gated_hybrid_tree | 0.95 | 0.000 | 0.000 |
+
+Interpretation:
+
+Flat memory gave the model the right answer somewhere in context, but with substantial wrong-branch contamination. Confidence-gated TreeMemory returned clean context and improved LLM answer accuracy from 70% to 95% in this run.
+
+For details, see:
+
+```text
+docs/llm_results.md
+```
+
 ## What This Result Supports
 
 The current result supports a cautious claim:

@@ -84,3 +84,16 @@ This benchmark is intentionally not part of the main CI suite. Unlike the determ
 The goal is to test the practical claim:
 
 > Cleaner hierarchical memory context should make downstream LLM answers less likely to mix unrelated meanings.
+
+Latest recorded result:
+
+```text
+flat_replace       accuracy 0.70, context contamination 0.875
+gated_hybrid_tree  accuracy 0.95, context contamination 0.000
+```
+
+See:
+
+```text
+docs/llm_results.md
+```
