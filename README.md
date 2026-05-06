@@ -296,6 +296,12 @@ The larger scaled benchmark is:
 benchmarks/scaled_memory_benchmark.py
 ```
 
+The robust natural-query benchmark is:
+
+```text
+benchmarks/robust_query_benchmark.py
+```
+
 It compares four retrieval strategies:
 
 - `flat_append`: flat memory where updates are appended and stale facts remain retrievable
@@ -338,6 +344,19 @@ gated_hybrid_tree 0.000
 ```
 
 This result supports the main claim: hierarchical memory can keep retrieval context much cleaner than flat memory while preserving strong answer retrieval.
+
+Robust natural-query result:
+
+```text
+flat_replace       top1 0.746, contamination 0.818
+gated_hybrid_tree  top1 0.797, contamination 0.131
+```
+
+This harder test exposed a slot-selection failure mode, then slot-aware reranking improved top-1 accuracy while preserving much cleaner context. See:
+
+```text
+docs/robust_results.md
+```
 
 Summary from the latest run:
 
@@ -428,6 +447,8 @@ benchmarks/llm_context_benchmark.py
                                     Optional real-LLM context benchmark
 benchmarks/lora_vs_tree_benchmark.py
                                     Optional TreeMemory vs LoRA benchmark
+benchmarks/robust_query_benchmark.py
+                                    Natural-query robustness benchmark
 docs/hypothesis.md                 Research hypothesis and predictions
 docs/architecture.md               System architecture
 docs/results.md                    Benchmark summary and interpretation
@@ -437,6 +458,7 @@ docs/llm_benchmark.md              Optional real-LLM benchmark notes
 docs/llm_results.md                First real-LLM benchmark result
 docs/lora_benchmark.md             Optional TreeMemory vs LoRA notes
 docs/lora_results.md               First TreeMemory vs LoRA result
+docs/robust_results.md             Natural-query robustness result
 experiments/                       Archived exploratory experiments
 artifacts/                         Local demo and benchmark outputs
 scripts/validate.py                Full local validation suite
