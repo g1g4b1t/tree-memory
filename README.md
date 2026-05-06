@@ -141,6 +141,21 @@ This compares external memory updates against LoRA adapter training for factual 
 docs/lora_benchmark.md
 ```
 
+Latest LoRA comparison result with `google/flan-t5-small`:
+
+```text
+flat_context           accuracy 0.625
+gated_tree_context     accuracy 0.906
+lora_only              accuracy 0.094
+lora_plus_gated_tree   accuracy 0.938
+```
+
+See:
+
+```text
+docs/lora_results.md
+```
+
 Run the interactive CLI:
 
 ```bash
@@ -421,6 +436,7 @@ docs/colab.md                      Google Colab quickstart
 docs/llm_benchmark.md              Optional real-LLM benchmark notes
 docs/llm_results.md                First real-LLM benchmark result
 docs/lora_benchmark.md             Optional TreeMemory vs LoRA notes
+docs/lora_results.md               First TreeMemory vs LoRA result
 experiments/                       Archived exploratory experiments
 artifacts/                         Local demo and benchmark outputs
 scripts/validate.py                Full local validation suite
