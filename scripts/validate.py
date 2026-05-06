@@ -64,6 +64,11 @@ def main():
         ["benchmarks/scaled_memory_benchmark.py"],
         must_contain=["Final Scaled Memory Benchmark verdict: PASS"],
     )
+    run_step(
+        "robust query benchmark",
+        ["benchmarks/robust_query_benchmark.py"],
+        must_contain=["Final Robust Query Benchmark verdict: PASS"],
+    )
     print("\nAll checks passed.")
 
 
