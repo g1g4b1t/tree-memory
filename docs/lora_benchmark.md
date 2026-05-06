@@ -50,6 +50,8 @@ pip install -r requirements-lora.txt
 
 Then install PyTorch for your platform if it is not already installed. In Colab, PyTorch is already included.
 
+Some Colab runtimes include an old `torchao` package that is incompatible with recent `peft`. The notebook removes `torchao` automatically because this benchmark does not need it.
+
 Run:
 
 ```bash
