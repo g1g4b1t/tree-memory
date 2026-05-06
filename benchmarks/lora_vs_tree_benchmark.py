@@ -251,6 +251,14 @@ def run(args):
         for update in updates:
             memory.update(Fact(**asdict(update)))
     memories_by_name = {memory.name: memory for memory in memories}
+    required_memory_names = {"flat_replace", "gated_hybrid_tree"}
+    missing_memory_names = sorted(required_memory_names - set(memories_by_name))
+    if missing_memory_names:
+        raise RuntimeError(
+            "Missing memory strategies from scaled_memory_benchmark.py: "
+            + ", ".join(missing_memory_names)
+            + ". Upload the latest benchmarks/scaled_memory_benchmark.py to GitHub and restart Colab."
+        )
 
     device = "cuda" if torch.cuda.is_available() and args.device == "auto" else args.device
     if device == "auto":
